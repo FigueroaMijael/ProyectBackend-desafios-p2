@@ -1,0 +1,133 @@
+[
+	{
+		"title": "pc",
+		"description": "pcxht100",
+		"price": 2060,
+		"category": " gamming",
+		"status": true,
+		"thumbnail": "images-url",
+		"stock": 10,
+		"code": "A1",
+		"id": 1
+	},
+	{
+		"title": "pc2000",
+		"description": "pcx731400",
+		"price": 260,
+		"category": "gamming",
+		"status": true,
+		"thumbnail": "images-url",
+		"stock": 9,
+		"code": "AB2",
+		"id": 2
+	},
+	{
+		"title": "pc3000",
+		"description": "pc6756x100",
+		"price": 2300,
+		"category": "gamming",
+		"status": true,
+		"thumbnail": "images-url",
+		"stock": 8,
+		"code": "ABC3",
+		"id": 3
+	},
+	{
+		"title": "ps1",
+		"description": "pcx140652465650",
+		"price": 2520,
+		"category": "gamming",
+		"status": true,
+		"thumbnail": "images-url",
+		"stock": 7,
+		"code": "AAA1",
+		"id": 4
+	},
+	{
+		"title": "ps2",
+		"description": "pc6756x100",
+		"price": 2300,
+		"category": "gamming",
+		"status": true,
+		"thumbnail": "images-url",
+		"stock": 6,
+		"code": "AAB2",
+		"id": 5
+	},
+	{
+		"title": "ps3",
+		"description": "pcx140652465650",
+		"price": 2520,
+		"category": "gamming",
+		"status": true,
+		"thumbnail": "images-url",
+		"stock": 5,
+		"code": "AAC3",
+		"id": 6
+	},
+	{
+		"title": "ps4",
+		"description": "pc6756x100",
+		"price": 2300,
+		"category": "gamming",
+		"status": true,
+		"thumbnail": "images-url",
+		"stock": 4,
+		"code": "ABB1",
+		"id": 7
+	},
+	{
+		"title": "ps5",
+		"description": "pcx140652465650",
+		"price": 2520,
+		"category": "gamming",
+		"status": true,
+		"thumbnail": "images-url",
+		"stock": 3,
+		"code": "ABC2",
+		"id": 8
+	},
+	{
+		"title": "xbox",
+		"description": "pcx105630",
+		"price": 2600,
+		"category": "gamming",
+		"status": true,
+		"thumbnail": "images-url",
+		"stock": 2,
+		"code": "ACA1",
+		"id": 9
+	},
+	{
+		"title": "xboc360",
+		"description": "pc756x14050",
+		"price": 220,
+		"category": "gamming",
+		"status": true,
+		"thumbnail": "images-url",
+		"stock": 1,
+		"code": "ACB4",
+		"id": 10
+	},
+	{
+		"title": "423412",
+		"description": "313421341234",
+		"price": "12344123",
+		"category": "1234123",
+		"status": true,
+		"stock": "134123412.jpg",
+		"code": "4123",
+		"id": 11
+	},
+	{
+		"title": "dsfgdfgs",
+		"description": "sdfgsdfgd",
+		"price": "234234",
+		"category": "hvbhbjhbj",
+		"status": true,
+		"thumbnail": "hbhbniuniu.jpg",
+		"stock": "23",
+		"code": "4232ABC",
+		"id": 12
+	}
+]

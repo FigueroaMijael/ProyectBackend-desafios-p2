@@ -1,0 +1,30 @@
+{
+	"carts": [
+		{
+			"id": 6019921,
+			"products": [
+				{
+					"product": 8,
+					"quantity": 1
+				},
+				{
+					"product": 5,
+					"quantity": 2
+				}
+			]
+		},
+		{
+			"id": 4514266,
+			"products": [
+				{
+					"product": 5,
+					"quantity": 3
+				},
+				{
+					"product": 7,
+					"quantity": 2
+				}
+			]
+		}
+	]
+}
