@@ -28,12 +28,10 @@ app.engine(
       defaultLayout: "main",
     })
   );
-  
-  // Seteamos nuestro motor
+
   app.set("view engine", "hbs");
   app.set("views", `${__dirname}/views`);
   
-  // Public
   app.use(express.static(`${__dirname}/public`));
 
   app.use('/api/productos', productsRoute);
@@ -42,7 +40,6 @@ app.engine(
 
 const users = [];
 
-// Socket communication
 socketServer.on("connection", (socketClient) => {
   console.log("Nuevo cliente conectado");
 

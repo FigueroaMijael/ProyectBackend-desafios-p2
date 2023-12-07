@@ -1,8 +1,25 @@
-<div>
-  <h1>
-    Bienvenido
-  </h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="welcome-container">
+        <div class="welcome-content">
+            <h1 class="glow-text">
+                ¡Bienvenido!
+            </h1>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/js/main.js"></script>
-</div>
+            <div class="button-container">
+                <a href="http://localhost:8080/api/home" class="welcome-button glow-text">Listado de productos</a>
+                <a href="http://localhost:8080/api/realtimeproducts" class="welcome-button glow-text">agregar productos</a>
+            </div>
+        </div>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/main.js"></script>
+    </div>
+</body>
+</html>

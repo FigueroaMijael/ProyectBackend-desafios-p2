@@ -11,7 +11,7 @@ const viewRouter = (socketServer, manager) => {
 router.get("/", (req, res) => {
   res.render("index", {
     title: "Bienvenida",
-      fileCss: "styles.css",
+      fileCss: "moduleBienvenida.css",
   })
 })
 
@@ -20,7 +20,7 @@ router.get("/home", (req, res) => {
   const productos = manager.mostrarProductos();
   res.render("home", {
       title: "Lista de Productos",
-      fileCss: "styles.css",
+      fileCss: "style.css",
       productos: productos,
   });
 });
@@ -30,7 +30,7 @@ router.get("/realtimeproducts", (req, res) => {
   const productos = manager.mostrarProductos();
   res.render("realTimeProducts", {
       title: "Lista de Productos en Tiempo Real",
-      fileCss: "styles.css",
+      fileCss: "style.css",
       productos: productos,
   });
 });
@@ -42,7 +42,7 @@ const users = [];
 router.get("/form", (req, res) => {
   res.render("form", {
     title: "Form example",
-    fileCss: "styles.css",
+    fileCss: "style.css",
   });
 });
 

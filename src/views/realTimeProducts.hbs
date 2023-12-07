@@ -8,14 +8,31 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Lista de Productos en Tiempo Real</h1>
-    <ul class="realTimeProductsContainer">
-        {{#each productos}}
-            <li>
-                <strong>{{this.title}}</strong> - {{this.description}} - {{this.price}} - {{this.category}} - {{this.thumbnail}} - {{this.stock}} - {{this.code}}
-            </li>
-        {{/each}}
-    </ul>
+    <div class="container">
+        <h1>Lista de Productos en Tiempo Real</h1>
+        <ul class="realTimeProductsContainer">
+            {{#each productos}}
+                <li class="styleList">
+                    <strong>{{this.title}}</strong>
+                    <img src="{{this.thumbnail}}" alt="imagen del producto">
+                    <p>{{this.description}}</p>
+                    <div class="details">
+                        <p class="detailTitle"><b>Precio:</b></p>
+                        <p class="detailContent">{{this.price}}</p>
+                    </div>
+                    <div class="details">
+                        <p class="detailTitle"><b>Categoría:</b></p>
+                        <p class="detailContent">{{this.category}}</p>
+                    </div>
+                    <div class="details">
+                        <p class="detailTitle"><b>Stock:</b></p>
+                        <p class="detailContent">{{this.stock}}</p>
+                    </div>
+
+                    <input type="submit" value="Agregar al carrito" id="">
+                </li>
+            {{/each}}
+        </ul>
 
     <div>
         <form method="post" id="realTimeForm" action="/api/realtimeproducts">
