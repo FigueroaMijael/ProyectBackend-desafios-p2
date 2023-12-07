@@ -36,7 +36,7 @@ app.engine(
 
   app.use('/api/productos', productsRoute);
   app.use('/api/cart', cartRoute);
-  app.use("/api", viewRouter(socketServer, manager));
+  app.use("/", viewRouter(socketServer, manager));
 
 const users = [];
 

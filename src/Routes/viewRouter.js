@@ -16,7 +16,7 @@ router.get("/", (req, res) => {
 })
 
 // viewRouter.js
-router.get("/home", (req, res) => {
+router.get("/api/home", (req, res) => {
   const productos = manager.mostrarProductos();
   res.render("home", {
       title: "Lista de Productos",
@@ -26,7 +26,7 @@ router.get("/home", (req, res) => {
 });
 
 
-router.get("/realtimeproducts", (req, res) => {
+router.get("/api/realtimeproducts", (req, res) => {
   const productos = manager.mostrarProductos();
   res.render("realTimeProducts", {
       title: "Lista de Productos en Tiempo Real",
@@ -39,14 +39,14 @@ router.get("/realtimeproducts", (req, res) => {
 const users = [];
 
 // Form
-router.get("/form", (req, res) => {
+router.get("/api/form", (req, res) => {
   res.render("form", {
     title: "Form example",
     fileCss: "style.css",
   });
 });
 
-router.post("/user", (req, res) => {
+router.post("/api/user", (req, res) => {
   const { name, age } = req.body;
 
   users.push({
@@ -60,7 +60,7 @@ router.post("/user", (req, res) => {
   });
 });
 
-router.post("/realtimeproducts", (req, res) => {
+router.post("/api/realtimeproducts", (req, res) => {
   const { title, description, price, category, thumbnail, stock, code } = req.body;
 
   const product = new Productos(
@@ -88,7 +88,7 @@ router.post("/realtimeproducts", (req, res) => {
   }
 });
 
-router.post("/deleteProduct", (req, res) => {
+router.post("/api/deleteProduct", (req, res) => {
   const { id } = req.body;
 
   try {
