@@ -11,7 +11,7 @@
     <div class="container">
         <h1>Lista de Productos en Tiempo Real</h1>
         <ul class="realTimeProductsContainer">
-            {{#each productos}}
+            {{#each realTimeViewProducts}}
                 <li class="styleList">
                     <strong>{{this.title}}</strong>
                     <img src="{{this.thumbnail}}" alt="imagen del producto">
@@ -35,7 +35,7 @@
         </ul>
 
     <div>
-        <form method="post" id="realTimeForm" action="/api/realtimeproducts">
+        <form method="post" id="realTimeForm" action="/realTimeProducts">
             <label for="realTimeTitle">Title:</label>
             <input type="text" id="realTimeTitle" name="title" required><br>
 

@@ -1,11 +1,7 @@
 import { Router } from "express";
-import { ProductManager, Productos } from '../ProductManager.js';
+import productsDao from "../daos/dbManager/products.dao.js";
 
-
-const viewRouter = (socketServer, manager) => {
-  const router = Router();
-
-
+const router = Router();
 
 
 router.get("/", (req, res) => {
@@ -16,37 +12,47 @@ router.get("/", (req, res) => {
 })
 
 // viewRouter.js
-router.get("/api/home", (req, res) => {
-  const productos = manager.mostrarProductos();
-  res.render("home", {
-      title: "Lista de Productos",
-      fileCss: "style.css",
-      productos: productos,
-  });
+router.get("/listProducts", async (req, res) => {
+  try {
+      const products = await productsDao.getAllProduct();
+      res.render("listProducts", {
+          fileCss: "style.css",
+          products,
+      });
+  } catch (error) {
+      console.error(error);
+      res.status(500).send("Error interno del servidor");
+  }
 });
 
 
-router.get("/api/realtimeproducts", (req, res) => {
-  const productos = manager.mostrarProductos();
-  res.render("realTimeProducts", {
+
+router.get("/realtimeproducts", async (req, res) => {
+  try {
+    const realTimeViewProducts = await productsDao.getAllProduct();
+
+    res.render("realTimeProducts", {
       title: "Lista de Productos en Tiempo Real",
       fileCss: "style.css",
-      productos: productos,
+      realTimeViewProducts,
   });
+  } catch (error) {
+      console.error(error);
+      res.status(500).send("Error interno del servidor");
+  }
 });
 
-
+//
 const users = [];
-
 // Form
-router.get("/api/form", (req, res) => {
+router.get("/form", (req, res) => {
   res.render("form", {
     title: "Form example",
     fileCss: "style.css",
   });
 });
 
-router.post("/api/user", (req, res) => {
+router.post("/user", (req, res) => {
   const { name, age } = req.body;
 
   users.push({
@@ -60,25 +66,27 @@ router.post("/api/user", (req, res) => {
   });
 });
 
-router.post("/api/realtimeproducts", (req, res) => {
+router.post("/realtimeproducts", (req, res) => {
   const { title, description, price, category, thumbnail, stock, code } = req.body;
 
-  const product = new Productos(
-    title,
-    description,
-    price,
-    category,
-    thumbnail,
-    stock,
-    code
-  );
+  const newProducts =
+    {
+      title: title,
+      description: description,
+      price: price,
+      category: category,
+      thumbnail: thumbnail,
+      stock: stock,
+      code: code
+    }
+  
 
   try {
-    manager.addProduct(product);
-    socketServer.emit("realTimeProducts_list", manager.mostrarProductos()); // Envía la lista actualizada a todos los clientes
+    productsDao.createProduct(newProducts);
+    socketServer.emit("realTimeProducts_list", productsDao.getAllProduct); // Envía la lista actualizada a todos los clientes
     res.status(201).json({
       message: "Producto creado",
-      product,
+      newProducts,
     });
   } catch (e) {
     res.status(500).json({
@@ -88,12 +96,12 @@ router.post("/api/realtimeproducts", (req, res) => {
   }
 });
 
-router.post("/api/deleteProduct", (req, res) => {
-  const { id } = req.body;
+router.post("/deleteProduct/:id", (req, res) => {
+  const { id } = req.params;
 
   try {
-      manager.deleteProduct(id);
-      manager.broadcastProducts(); // Envía la lista actualizada a todos los clientes
+     productsDao.deleteProduct(id);
+     productsDao.broadcastProducts(); // Envía la lista actualizada a todos los clientes
       res.status(200).json({
           message: "Producto eliminado",
       });
@@ -105,8 +113,11 @@ router.post("/api/deleteProduct", (req, res) => {
   }
 });
 
-return router
-}
+router.get("/chat", (req, res) => {
+  res.render("chatAplication", {
+    fileCss: "chatStyle.css"
+  });
+});
 
-export default viewRouter;
+export default router;
 

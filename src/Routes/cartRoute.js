@@ -1,75 +1,72 @@
 import { Router } from 'express';
-import { ProductManager } from '../ProductManager.js';
-import { CartManager } from '../cartManager.js';
+import cartDao from '../daos/dbManager/cart.dao.js';
 
-const productManager = new ProductManager('./Productos.json');
-const cartManager = new CartManager('./Carts.json');
 const router = Router();
 
-router.post('/', (req, res) => {
-  const result = cartManager.createNewCart();
-
-  if (result) {
-    res.status(200).json(
-      { message: 'Nuevo carrito creado con éxito.',
-        result,});
-  } else {
-    res.status(500).json({ message: 'Error al crear un nuevo carrito.' });
-  }
+// Obtener todos los productos en el carrito
+router.get('/', async (req, res) => {
+    try {
+        const cart = await cartDao.getAllCart();
+        res.json(cart);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
-router.post('/:cid/productos/:pid', async (req, res) => {
-  try {
-    const { cid, pid } = req.params;
-    const quantity = req.body.quantity || 1;
+// Agregar un producto al carrito
+router.post('/:cartId/products/:productId', async (req, res) => {
+    const { cartId, productId } = req.params;
+    const { quantity } = req.body;
 
-    const carrito = cartManager.mostrarCarrito();
-
-
-    const cartExists = carrito.find((cart) => cart.id === Number(cid));
-    if (!cartExists) {
-      return res.status(404).json({ message: 'Carrito no encontrado.' });
+    try {
+        const updatedCart = await cartDao.addProductToCart(cartId, productId, quantity);
+        res.json(updatedCart);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-
-    const producto = await productManager.mostrarProductos();
-
-    const product = producto.find((prod) => prod.id === Number(pid));
-    if (!product) {
-      return res.status(404).json({ message: 'Producto no encontrado.' });
-    }
-
-    const result = await cartManager.addProductToCart(Number(cid), Number(pid), quantity);
-
-    if (result) {
-      res.status(200).json({ message: 'Producto agregado al carrito con éxito.' });
-    } else {
-      res.status(500).json({ message: 'Error al agregar el producto al carrito.' });
-    }
-  } catch (error) {
-    console.error('Error en la solicitud:', error);
-    res.status(500).json({ message: 'Error interno del servidor.' });
-  }
 });
 
+// Actualizar la cantidad de un producto en el carrito
+router.put('/:cartId/products/:productId', async (req, res) => {
+    const { cartId, productId } = req.params;
+    const { quantity } = req.body;
 
-router.get('/:cid', (req, res) => {
-
-  const { cid } = req.params
-
-  const carrito = cartManager.mostrarCarrito()
-
-  const cart = carrito.find((cartId) => cartId.id === Number(cid))
-
-if (cart) {
-  return res.json({
-    message: "carrito obtenido",
-    cart
-  })
-} else {
-  res.status(404).json({ message: 'Carrito no encontrado' });
-}
+    try {
+        const updatedCart = await cartDao.updateProductQuantity(cartId, productId, quantity);
+        res.json(updatedCart);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
+// Eliminar un producto del carrito
+router.delete('/:cartId/products/:productId', async (req, res) => {
+    const { cartId, productId } = req.params;
 
+    try {
+        const updatedCart = await cartDao.deleteProductFromCart(cartId, productId);
+        res.json(updatedCart);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// Limpiar todos los productos del carrito
+router.delete('/:cartId/clear', async (req, res) => {
+    const { cartId } = req.params;
+
+    try {
+        const updatedCart = await cartDao.clearCart(cartId);
+        res.json(updatedCart);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 export default router;
+
