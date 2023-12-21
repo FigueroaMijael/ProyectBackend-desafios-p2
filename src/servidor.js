@@ -9,7 +9,6 @@ import productsRoute from './Routes/productsRoute.js';
 import cartRoute from './Routes/cartRoute.js';
 import viewRouter from './Routes/viewRouter.js'
 import MessagesDao from './daos/dbManager/messages.dao.js'
-import ProductsDao from './daos/dbManager/products.dao.js';
 
 const app = express();
 const PORT = 8080;

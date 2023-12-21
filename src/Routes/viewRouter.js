@@ -12,7 +12,6 @@ router.get("/", (req, res) => {
   })
 })
 
-// viewRouter.js
 router.get("/listProducts", async (req, res) => {
   try {
       const products = await productsDao.getAllProduct();
@@ -57,17 +56,13 @@ router.post("/realtimeproducts", async (req, res) => {
   };
 
   try {
-    // Espera a que se complete la creación del producto en la base de datos
+
     await productsDao.createProduct(newProduct);
 
-    // Emitir el evento solo después de que el producto se haya creado correctamente
     io.emit("realTimeProducts_list", await productsDao.getAllProduct());
 
-    // Aquí está el problema, la variable realTimeViewProducts no está definida
-    // Deberías usar el mismo enfoque que en el código anterior: obtener los productos después de crear el nuevo
     const realTimeViewProducts = await productsDao.getAllProduct();
 
-    // También, la variable en este contexto es realTimeViewProducts, no realTimeProducts
     res.status(201).render("realTimeProducts", {
       title: "Lista de Productos en Tiempo Real",
       fileCss: "style.css",
@@ -88,7 +83,7 @@ router.post("/deleteProduct/:id", (req, res) => {
 
   try {
      productsDao.deleteProduct(id);
-     productsDao.broadcastProducts(); // Envía la lista actualizada a todos los clientes
+     productsDao.broadcastProducts(); 
       res.status(200).json({
           message: "Producto eliminado",
       });
@@ -107,4 +102,3 @@ router.get("/chat", (req, res) => {
 });
 
 export default router;
-

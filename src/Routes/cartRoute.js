@@ -3,7 +3,6 @@ import cartDao from '../daos/dbManager/cart.dao.js';
 
 const router = Router();
 
-// Obtener todos los productos en el carrito
 router.get('/', async (req, res) => {
     try {
         const cart = await cartDao.getAllCart();
@@ -14,7 +13,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Agregar un producto al carrito
 router.post('/:cartId/products/:productId', async (req, res) => {
     const { cartId, productId } = req.params;
     const { quantity } = req.body;
@@ -28,7 +26,6 @@ router.post('/:cartId/products/:productId', async (req, res) => {
     }
 });
 
-// Actualizar la cantidad de un producto en el carrito
 router.put('/:cartId/products/:productId', async (req, res) => {
     const { cartId, productId } = req.params;
     const { quantity } = req.body;
@@ -42,7 +39,6 @@ router.put('/:cartId/products/:productId', async (req, res) => {
     }
 });
 
-// Eliminar un producto del carrito
 router.delete('/:cartId/products/:productId', async (req, res) => {
     const { cartId, productId } = req.params;
 
@@ -55,7 +51,6 @@ router.delete('/:cartId/products/:productId', async (req, res) => {
     }
 });
 
-// Limpiar todos los productos del carrito
 router.delete('/:cartId/clear', async (req, res) => {
     const { cartId } = req.params;
 
@@ -69,4 +64,3 @@ router.delete('/:cartId/clear', async (req, res) => {
 });
 
 export default router;
-

@@ -13,25 +13,20 @@ class CartDao {
         const cart = await cartModel.findById(cartId);
 
         if (!cart) {
-            // Manejar el caso en que el carrito no existe
             throw new Error('Cart not found');
         }
 
-        // Comprobar si el producto ya está en el carrito
         const existingProduct = cart.products.find(product => product.productId === productId);
 
         if (existingProduct) {
-            // Si el producto ya está en el carrito, actualizar la cantidad
             existingProduct.quantity += quantity;
         } else {
-            // Si el producto no está en el carrito, agregarlo
             cart.products.push({
                 productId,
                 quantity
             });
         }
 
-        // Guardar el carrito actualizado en la base de datos
         return await cart.save();
     }
 
@@ -47,7 +42,6 @@ class CartDao {
         if (existingProduct) {
             existingProduct.quantity = quantity;
 
-            // Guardar el carrito actualizado en la base de datos
             return await cart.save();
         } else {
             throw new Error('Product not found in cart');
@@ -61,10 +55,8 @@ class CartDao {
             throw new Error('Cart not found');
         }
 
-        // Filtrar los productos para excluir el producto que se va a eliminar
         cart.products = cart.products.filter(product => product.productId !== productId);
 
-        // Guardar el carrito actualizado en la base de datos
         return await cart.save();
     }
 
@@ -75,10 +67,8 @@ class CartDao {
             throw new Error('Cart not found');
         }
 
-        // Limpiar todos los productos del carrito
         cart.products = [];
 
-        // Guardar el carrito actualizado en la base de datos
         return await cart.save();
     }
 }

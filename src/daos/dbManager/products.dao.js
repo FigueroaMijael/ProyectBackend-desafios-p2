@@ -25,7 +25,7 @@ class ProductsDao {
     async broadcastProducts() {
         try {
             const products = await this.getAllProduct();
-            io.emit("realTimeProducts_list", products); // Utiliza io.emit en lugar de Server.emit
+            io.emit("realTimeProducts_list", products); 
         } catch (e) {
             console.error("Hubo un error al emitir la lista de productos en tiempo real:", e.message);
         }

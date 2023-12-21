@@ -19,8 +19,6 @@ class MessagesDao {
       throw new Error(`Error al agregar un nuevo mensaje: ${error.message}`);
     }
   }
-
-  // Puedes agregar más métodos según sea necesario (actualizar, eliminar, etc.)
 }
 
 export default new MessagesDao();
