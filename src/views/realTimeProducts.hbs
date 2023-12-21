@@ -9,33 +9,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>Lista de Productos en Tiempo Real</h1>
-        <ul class="realTimeProductsContainer">
-            {{#each realTimeViewProducts}}
-                <li class="styleList">
-                    <strong>{{this.title}}</strong>
-                    <img src="{{this.thumbnail}}" alt="imagen del producto">
-                    <p>{{this.description}}</p>
-                    <div class="details">
-                        <p class="detailTitle"><b>Precio:</b></p>
-                        <p class="detailContent">{{this.price}}</p>
-                    </div>
-                    <div class="details">
-                        <p class="detailTitle"><b>Categoría:</b></p>
-                        <p class="detailContent">{{this.category}}</p>
-                    </div>
-                    <div class="details">
-                        <p class="detailTitle"><b>Stock:</b></p>
-                        <p class="detailContent">{{this.stock}}</p>
-                    </div>
-
-                    <input type="submit" value="Agregar al carrito" id="">
-                </li>
-            {{/each}}
-        </ul>
-
     <div>
-        <form method="post" id="realTimeForm" action="/realTimeProducts">
+        <form method="post" id="realTimeForm">
             <label for="realTimeTitle">Title:</label>
             <input type="text" id="realTimeTitle" name="title" required><br>
 
@@ -59,6 +34,36 @@
 
             <input type="submit" value="Send" id="realTimeButtonn">
         </form>
+
+<div class="realTimeProductsContainer">
+    <h1>Lista de Productos en Tiempo Real</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Precio</th>
+                <th>Código</th>
+                <th>ID</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="realTimeProductTableBody">
+            {{#each realTimeViewProducts}}
+                <tr>
+                    <td>{{this.title}}</td>
+                    <td>{{this.price}}</td>
+                    <td>{{this.code}}</td>
+                    <td>{{this.id}}</td>
+                    <td>
+                        <button class="deleteProduct" onclick="deleteProduct('{{this.id}}')">Eliminar</button>
+                        <button class="updateProduct" onclick="updateProduct('{{this.id}}')">Actualizar</button>
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
     </div>
 
     <script src="/socket.io/socket.io.js"></script>

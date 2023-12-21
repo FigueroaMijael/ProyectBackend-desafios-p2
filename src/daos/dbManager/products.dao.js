@@ -1,4 +1,5 @@
 import { productModel } from '../../Models/products.model.js';
+import { io } from '../../servidor.js';
 
 class ProductsDao {
     async getAllProduct() {
@@ -22,7 +23,12 @@ class ProductsDao {
     }
 
     async broadcastProducts() {
-       return await socketServer.emit("realTimeProducts_list", getAllProduct());
+        try {
+            const products = await this.getAllProduct();
+            io.emit("realTimeProducts_list", products); // Utiliza io.emit en lugar de Server.emit
+        } catch (e) {
+            console.error("Hubo un error al emitir la lista de productos en tiempo real:", e.message);
+        }
     }
 }
 

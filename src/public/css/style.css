@@ -64,18 +64,18 @@ h1 {
 
 /* FORMULARIO */
 form {
-    max-width: 800px;
+    max-width: 100vh;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 30px;
+    padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     
 }
 
 label {
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     color: #333;
     font-size: 1.2em;
 }
@@ -84,8 +84,8 @@ input[type="text"],
 input[type="number"],
 textarea {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
+    padding: 5px;
+    margin-bottom: 10px;
     box-sizing: border-box;
     border: 1px solid #ccc;
     border-radius: 6px;
@@ -94,7 +94,7 @@ textarea {
 input[type="submit"] {
     background-color: #4caf50;
     color: #fff;
-    padding: 15px;
+    padding: 10px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -105,4 +105,46 @@ input[type="submit"]:hover {
     background-color: #45a049;
 }
 
- 
+ /* Estilos generales para la tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+th, td {
+    padding: 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+    background-color: #fff;
+    color: #333;
+}
+
+th {
+    background-color: #f5f5f5;
+}
+
+/* Estilos para los botones */
+button {
+    padding: 10px 15px;
+    margin: 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave para los botones */
+}
+
+/* Estilos específicos para el botón "Eliminar" */
+button.deleteProduct {
+    background-color: #d32f2f; /* Rojo oscuro */
+    color: #fff;
+}
+
+/* Estilos específicos para el botón "Actualizar" */
+button.updateProduct {
+    background-color: #1565c0; /* Azul medio */
+    color: #fff;
+}

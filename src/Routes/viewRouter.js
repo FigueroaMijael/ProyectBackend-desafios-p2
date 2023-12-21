@@ -1,5 +1,6 @@
 import { Router } from "express";
 import productsDao from "../daos/dbManager/products.dao.js";
+import { io } from "../servidor.js";
 
 const router = Router();
 
@@ -42,51 +43,35 @@ router.get("/realtimeproducts", async (req, res) => {
   }
 });
 
-//
-const users = [];
-// Form
-router.get("/form", (req, res) => {
-  res.render("form", {
-    title: "Form example",
-    fileCss: "style.css",
-  });
-});
-
-router.post("/user", (req, res) => {
-  const { name, age } = req.body;
-
-  users.push({
-    name,
-    age,
-  });
-
-  res.json({
-    message: "User created",
-    user: { name, age },
-  });
-});
-
-router.post("/realtimeproducts", (req, res) => {
+router.post("/realtimeproducts", async (req, res) => {
   const { title, description, price, category, thumbnail, stock, code } = req.body;
 
-  const newProducts =
-    {
-      title: title,
-      description: description,
-      price: price,
-      category: category,
-      thumbnail: thumbnail,
-      stock: stock,
-      code: code
-    }
-  
+  const newProduct = {
+    title,
+    description,
+    price,
+    category,
+    thumbnail,
+    stock,
+    code,
+  };
 
   try {
-    productsDao.createProduct(newProducts);
-    socketServer.emit("realTimeProducts_list", productsDao.getAllProduct); // Envía la lista actualizada a todos los clientes
-    res.status(201).json({
-      message: "Producto creado",
-      newProducts,
+    // Espera a que se complete la creación del producto en la base de datos
+    await productsDao.createProduct(newProduct);
+
+    // Emitir el evento solo después de que el producto se haya creado correctamente
+    io.emit("realTimeProducts_list", await productsDao.getAllProduct());
+
+    // Aquí está el problema, la variable realTimeViewProducts no está definida
+    // Deberías usar el mismo enfoque que en el código anterior: obtener los productos después de crear el nuevo
+    const realTimeViewProducts = await productsDao.getAllProduct();
+
+    // También, la variable en este contexto es realTimeViewProducts, no realTimeProducts
+    res.status(201).render("realTimeProducts", {
+      title: "Lista de Productos en Tiempo Real",
+      fileCss: "style.css",
+      realTimeViewProducts,
     });
   } catch (e) {
     res.status(500).json({
@@ -95,6 +80,8 @@ router.post("/realtimeproducts", (req, res) => {
     });
   }
 });
+
+  
 
 router.post("/deleteProduct/:id", (req, res) => {
   const { id } = req.params;
