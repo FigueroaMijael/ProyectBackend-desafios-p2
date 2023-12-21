@@ -5,8 +5,8 @@ class CartDao {
         return await cartModel.find();
     }
 
-    async getCartById(cartId) {
-        return await cartModel.findById(cartId);
+    async getCartById(id) {
+        return await cartModel.findById(id);
     }
 
     async addProductToCart(cartId, productId, quantity) {
@@ -16,7 +16,7 @@ class CartDao {
             throw new Error('Cart not found');
         }
 
-        const existingProduct = cart.products.find(product => product.productId === productId);
+        const existingProduct = cart.products.find(product => product._id === productId);
 
         if (existingProduct) {
             existingProduct.quantity += quantity;
