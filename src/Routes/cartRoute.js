@@ -7,10 +7,10 @@ router.get('/', async (req, res) => {
     try {
         const carts = await cartDao.getAllCart();
         res.json(carts);
-    } catch (error) {
+      } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Internal Server Error' });
-    }
+      }
 });
 
 router.get("/:cartId", async (req, res) => {

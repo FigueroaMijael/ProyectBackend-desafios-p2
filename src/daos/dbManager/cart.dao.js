@@ -2,9 +2,16 @@ import { cartModel } from '../../Models/cart.model.js';
 
 class CartDao {
     async getAllCart() {
-        return await cartModel.find();
-    }
+        const carts = await cartModel.find();
 
+        if (carts.length === 0) {
+          const newCart = await cartModel.create({ products: [] });
+          return [newCart];
+        }
+    
+        return carts;
+      }
+      
     async getCartById(id) {
         return await cartModel.findById(id);
     }
