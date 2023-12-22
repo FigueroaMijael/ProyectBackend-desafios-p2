@@ -19,7 +19,24 @@ class ProductsDao {
     }
 
     async deleteProduct(id) {
-        return await productModel.findByIdAndDelete(id)
+        try {
+            console.log('Intentando encontrar el producto...');
+            const existingProduct = await productModel.findById(id);
+    
+            if (!existingProduct) {
+                console.log('Producto no encontrado.');
+                return null; // Producto no encontrado
+            }
+    
+            console.log('Producto encontrado, intentando eliminar...');
+            const result = await productModel.findByIdAndDelete(id);
+    
+            console.log('Producto eliminado exitosamente.');
+            return result;
+        } catch (error) {
+            console.error('Error al eliminar el producto:', error);
+            throw error;
+        }
     }
 
     async broadcastProducts() {
