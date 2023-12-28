@@ -1,42 +1,65 @@
 import { cartModel } from '../../Models/cart.model.js';
+import { productModel } from '../../Models/products.model.js';
+import mongoose from 'mongoose';
 
 class CartDao {
-    async getAllCart() {
-        const carts = await cartModel.find();
-
-        if (carts.length === 0) {
-          const newCart = await cartModel.create({ products: [] });
-          return [newCart];
+    async getAllCart(cartId) {
+        const cart = await cartModel.findOne({ _id: cartId }).populate('products.product');
+    
+        if (!cart) {
+            const newCart = await cartModel.create({ products: [] });
+            return [newCart];
         }
     
-        return carts;
-      }
-      
+        return [cart]; // Devolver un array con el carrito para mantener la consistencia con la plantilla
+    }
+    
     async getCartById(id) {
         return await cartModel.findById(id);
     }
 
     async addProductToCart(cartId, productId, quantity) {
-        const cart = await cartModel.findById(cartId);
-
+        const cart = await cartModel.findOne({ _id: cartId }).populate('products.product', 'title price thumbnail');
+    
         if (!cart) {
             throw new Error('Cart not found');
         }
-
-        const existingProduct = cart.products.find(product => product._id === productId);
-
-        if (existingProduct) {
-            existingProduct.quantity += quantity;
+    
+        const existingProductIndex = cart.products.findIndex(p => p.product && p.product.equals(productId));
+    
+        if (existingProductIndex !== -1) {
+            // If product exists, increase quantity
+            cart.products[existingProductIndex].quantity += quantity;
         } else {
+            // If product doesn't exist, add a new product to the cart
+            const product = await productModel.findById(productId);
+    
+            if (!product) {
+                throw new Error('Product not found');
+            }
+    
             cart.products.push({
-                productId,
-                quantity
+                _id: new mongoose.Types.ObjectId(), // Assign a new ObjectId to the product
+                product: product._id,
+                title: product.title,
+                price: product.price,
+                thumbnail: product.thumbnail,
+                quantity: quantity
             });
         }
-
-        return await cart.save();
+    
+        console.log('Saving cart:');
+        console.log('cart:', cart);
+    
+        // Update the cart in the database
+        await cartModel.findByIdAndUpdate(cartId, { products: cart.products });
+    
+        return cart.products;
     }
+    
+    
 
+    
     async updateProductQuantity(cartId, productId, quantity) {
         const cart = await cartModel.findById(cartId);
 
@@ -56,16 +79,24 @@ class CartDao {
     }
 
     async deleteProductFromCart(cartId, productId) {
-        const cart = await cartModel.findById(cartId);
-
-        if (!cart) {
-            throw new Error('Cart not found');
+        try {
+            const cart = await cartModel.findByIdAndUpdate(
+                cartId,
+                { $pull: { products: { _id: productId } } },
+                { new: true }
+            );
+    
+            if (!cart) {
+                throw new Error('Cart not found');
+            }
+    
+            return cart;
+        } catch (error) {
+            console.error('Error deleting product from cart:', error);
+            throw error;
         }
-
-        cart.products = cart.products.filter(product => product.productId !== productId);
-
-        return await cart.save();
     }
+    
 
     async clearCart(cartId) {
         const cart = await cartModel.findById(cartId);

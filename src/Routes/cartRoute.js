@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import cartDao from '../daos/dbManager/cart.dao.js';
+import mongoose from 'mongoose';
 
 const router = Router();
 
@@ -26,12 +27,22 @@ router.get("/:cartId", async (req, res) => {
     }
 })
 
+
 router.post('/:cartId/products/:productId/:quantity', async (req, res) => {
     const { cartId, productId, quantity } = req.params;
-/*     const { quantity } = req.body; */
+
+    if (!mongoose.Types.ObjectId.isValid(cartId) || !mongoose.Types.ObjectId.isValid(productId)) {
+        return res.status(400).json({ error: 'Invalid ObjectId' });
+    }
+
+    const parsedQuantity = parseInt(quantity, 10);
+
+    if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
+        return res.status(400).json({ error: 'Invalid quantity' });
+    }
 
     try {
-        const updatedCart = await cartDao.addProductToCart(cartId, productId, quantity);
+        const updatedCart = await cartDao.addProductToCart(cartId, productId, parsedQuantity);
         res.json(updatedCart);
     } catch (error) {
         console.log(error);
@@ -57,23 +68,24 @@ router.delete('/:cartId/products/:productId', async (req, res) => {
 
     try {
         const updatedCart = await cartDao.deleteProductFromCart(cartId, productId);
+
+        if (!updatedCart) {
+            return res.status(404).json({ error: 'Cart not found' });
+        }
+
+        if (!updatedCart.products || updatedCart.products.length === 0) {
+
+            const clearCart = await cartDao.clearCart(cartId);
+            res.json(clearCart);
+    
+            return res.json({ message: 'Product deleted successfully, cart is now empty' });
+        }
+
         res.json(updatedCart);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-router.delete('/:cartId/clear', async (req, res) => {
-    const { cartId } = req.params;
-
-    try {
-        const updatedCart = await cartDao.clearCart(cartId);
-        res.json(updatedCart);
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-export default router;
+export default router

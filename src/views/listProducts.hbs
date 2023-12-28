@@ -10,29 +10,33 @@
 <body>
     <div class="container">
         <h1>Listado de Productos</h1>
-        <ul class="realTimeProductsContainer">
-            {{#each products}}
-                <li class="styleList">
-                    <strong>{{this.title}}</strong>
-                    <img src="{{this.thumbnail}}" alt="imagen del producto">
-                    <p>{{this.description}}</p>
-                    <div class="details">
-                        <p class="detailTitle"><b>Precio:</b></p>
-                        <p class="detailContent">{{this.price}}</p>
-                    </div>
-                    <div class="details">
-                        <p class="detailTitle"><b>Categoría:</b></p>
-                        <p class="detailContent">{{this.category}}</p>
-                    </div>
-                    <div class="details">
-                        <p class="detailTitle"><b>Stock:</b></p>
-                        <p class="detailContent">{{this.stock}}</p>
-                    </div>
+<ul class="ProductsContainer">
+    {{#each products}}
+        <li class="styleList">
+            <strong>{{this.title}}</strong>
+            <img src="{{this.thumbnail}}" alt="imagen del producto">
+            <p>{{this.description}}</p>
+            <div class="details">
+                <p class="detailTitle"><b>Precio:</b></p>
+                <p class="detailContent">{{this.price}}</p>
+            </div>
+            <div class="details">
+                <p class="detailTitle"><b>Categoría:</b></p>
+                <p class="detailContent">{{this.category}}</p>
+            </div>
+            <div class="details">
+                <p class="detailTitle"><b>Stock:</b></p>
+                <p class="detailContent">{{this.stock}}</p>
+            </div>
 
-                    <input type="submit" value="Agregar al carrito" id="">
-                </li>
-            {{/each}}
-        </ul>
+            <!-- Enlace a la vista de detalles del producto -->
+            <a href="/api/listProducts/details/{{this._id}}">Ver detalles</a>
+
+            <!-- Botón de agregar al carrito directamente -->
+            <input type="submit" value="Agregar al carrito" id="">
+        </li>
+    {{/each}}
+</ul>
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/main.js"></script>

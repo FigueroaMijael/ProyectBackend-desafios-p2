@@ -2,10 +2,43 @@ import { productModel } from '../../Models/products.model.js';
 import { io } from '../../servidor.js';
 
 class ProductsDao {
-    async getAllProduct() {
-        return await productModel.find();
-    }
+    async getAllProduct({ limit = 10, page = 1, sort, query, category, availability }) {
+        const options = {
+          limit,
+          skip: (page - 1) * limit,
+        };
+      
+        if (sort) {
+          options.sort = { price: sort === "asc" ? 1 : -1 };
+        }
+      
+        const queryFilter = {
+      ...(query ? { title: query } : {}),
+      ...(category ? { category } : {}),
+      // Modificamos la condición para considerar el stock mayor a 0
+      stock: { $gt: 0 },
+    };
 
+    if (availability === "disponible") {
+        // Solo considerar productos con stock mayor a 0 si la disponibilidad es "disponible"
+        queryFilter.stock = { $gt: 0 };
+      }
+      
+        const products = await productModel.find(queryFilter, null, options);
+      
+        const count = await productModel.countDocuments(queryFilter);
+        const hasPrevPage = page > 1;
+        const hasNextPage = page * limit < count;
+      
+        return {
+          products,
+          total: count,
+          hasPrevPage,
+          hasNextPage,
+        };
+      }
+      
+      
     async getProductById(id) {
         return await productModel.findById(id)
     }

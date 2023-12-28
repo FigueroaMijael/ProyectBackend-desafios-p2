@@ -1,6 +1,7 @@
 import { Router } from "express";
 import productsDao from "../daos/dbManager/products.dao.js";
 import { io } from "../servidor.js";
+import cartDao from "../daos/dbManager/cart.dao.js";
 
 const router = Router();
 
@@ -14,10 +15,28 @@ router.get("/", (req, res) => {
 
 router.get("/listProducts", async (req, res) => {
   try {
-      const products = await productsDao.getAllProduct();
+      const { limit = 10, page = 1, sort, query, category, availability } = req.query;
+
+      // Convierte limit y page a enteros
+      const limitInt = parseInt(limit);
+      const pageInt = parseInt(page);
+
+      // Llama a productsDao con los parámetros proporcionados
+      const result = await productsDao.getAllProduct({
+          limit: limitInt,
+          page: pageInt,
+          sort,
+          query,
+          category,
+          availability,
+      });
+
       res.render("listProducts", {
           fileCss: "style.css",
-          products,
+          products: result.products,  // Cambiado de result a result.products
+          total: result.total,
+          hasPrevPage: result.hasPrevPage,
+          hasNextPage: result.hasNextPage,
       });
   } catch (error) {
       console.error(error);
@@ -26,21 +45,54 @@ router.get("/listProducts", async (req, res) => {
 });
 
 
+router.get("/listProducts/details/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+      const product = await productsDao.getProductById(id);
+      res.render("productDetails", {
+          product,
+      });
+  } catch (error) {
+      console.log(error);
+      res.status(500).json({
+          status: "error",
+          error: "Error interno del servidor",
+      });
+  }
+});
+
+
 
 router.get("/realtimeproducts", async (req, res) => {
   try {
-    const realTimeViewProducts = await productsDao.getAllProduct();
+    const { limit = 10, page = 1} = req.query;
+
+    // Convierte limit y page a enteros
+    const limitInt = parseInt(limit);
+    const pageInt = parseInt(page);
+
+    // Llama a productsDao con los parámetros proporcionados
+    const result = await productsDao.getAllProduct({
+      limit: limitInt,
+      page: pageInt,
+    });
 
     res.render("realTimeProducts", {
       title: "Lista de Productos en Tiempo Real",
       fileCss: "style.css",
-      realTimeViewProducts,
-  });
+      products: result.products,
+      total: result.total,
+      hasPrevPage: result.hasPrevPage,
+      hasNextPage: result.hasNextPage,
+    });
   } catch (error) {
-      console.error(error);
-      res.status(500).send("Error interno del servidor");
+    console.error(error);
+    res.status(500).send("Error interno del servidor");
   }
 });
+
+
 
 router.post("/realtimeproducts", async (req, res) => {
   const { title, description, price, category, thumbnail, stock, code } = req.body;
@@ -100,5 +152,26 @@ router.get("/chat", (req, res) => {
     fileCss: "chatStyle.css"
   });
 });
+
+// Asumiendo que tienes una ruta para ver carritos específicos, algo como "/carts/:cid"
+router.get("/carts/:cartId", async (req, res) => {
+  try {
+    const { cartId } = req.params;
+
+    // Obtener productos específicos del carrito utilizando el ID del carrito
+    const cartProducts = await cartDao.getAllCart(cartId);
+
+    // Renderizar la vista de carrito con los productos específicos
+    res.render("cart", {
+      title: "Vista del Carrito",
+      fileCss: "cartStyle.css",
+      cartProducts,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error interno del servidor");
+  }
+});
+
 
 export default router;

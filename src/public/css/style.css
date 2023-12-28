@@ -16,7 +16,7 @@ h1 {
     color: #333;
 }
 
-.realTimeProductsContainer {
+.ProductsContainer {
     list-style: none;
     padding: 0;
     display: flex;

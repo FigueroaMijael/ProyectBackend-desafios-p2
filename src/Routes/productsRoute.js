@@ -4,16 +4,61 @@ import productsDao from "../daos/dbManager/products.dao.js";
 const router = Router();
 
 router.get("/", async (req, res) => {
- try {
-  const products = await productsDao.getAllProduct();
+  try {
+    const { limit = 10, page = 1, sort, query, category, availability } = req.query;
 
-  res.json({
-    products
-  });
- } catch (error) {
-  console.log(error);
- }
+    // Convierte limit y page a enteros
+    const limitInt = parseInt(limit);
+    const pageInt = parseInt(page);
+
+    // Llama a productsDao con los parámetros proporcionados
+    const result = await productsDao.getAllProduct({
+      limit: limitInt,
+      page: pageInt,
+      sort,
+      query,
+      category,
+      availability,
+    });
+
+    const totalPages = Math.ceil(result.total / limitInt);
+
+    const response = {
+      status: "success",
+      payload: result.products,
+      totalPages,
+      prevPage: result.hasPrevPage ? pageInt - 1 : null,
+      nextPage: result.hasNextPage ? pageInt + 1 : null,
+      page: pageInt,
+      hasPrevPage: result.hasPrevPage,
+      hasNextPage: result.hasNextPage,
+      prevLink: result.hasPrevPage ? buildLink(req.baseUrl, pageInt - 1, limitInt, sort, query, category, availability) : null,
+      nextLink: result.hasNextPage ? buildLink(req.baseUrl, pageInt + 1, limitInt, sort, query, category, availability) : null,
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      status: "error",
+      error: "Error interno del servidor",
+    });
+  }
 });
+
+// Función para construir enlaces con parámetros de consulta
+function buildLink(baseUrl, page, limit, sort, query, category, availability) {
+  const queryParams = new URLSearchParams({
+    page,
+    limit,
+    sort,
+    query,
+    category,
+    availability,
+  });
+  return `${baseUrl}?${queryParams.toString()}`;
+}
+
 
 router.get("/:id", async (req, res) => {
 
