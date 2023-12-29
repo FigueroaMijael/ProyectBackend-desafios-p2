@@ -2,9 +2,13 @@ import { Router } from "express";
 import productsDao from "../daos/dbManager/products.dao.js";
 import { io } from "../servidor.js";
 import cartDao from "../daos/dbManager/cart.dao.js";
+import Handlebars from "handlebars";
+
+Handlebars.registerHelper('add', (a, b) => {
+  return a + b;
+});
 
 const router = Router();
-
 
 router.get("/", (req, res) => {
   res.render("index", {
@@ -17,11 +21,9 @@ router.get("/listProducts", async (req, res) => {
   try {
       const { limit = 10, page = 1, sort, query, category, availability } = req.query;
 
-      // Convierte limit y page a enteros
       const limitInt = parseInt(limit);
       const pageInt = parseInt(page);
 
-      // Llama a productsDao con los parámetros proporcionados
       const result = await productsDao.getAllProduct({
           limit: limitInt,
           page: pageInt,
@@ -32,12 +34,15 @@ router.get("/listProducts", async (req, res) => {
       });
 
       res.render("listProducts", {
-          fileCss: "style.css",
-          products: result.products,  // Cambiado de result a result.products
-          total: result.total,
-          hasPrevPage: result.hasPrevPage,
-          hasNextPage: result.hasNextPage,
-      });
+        fileCss: "style.css",
+        products: result.products,
+        total: result.total,
+        hasPrevPage: result.hasPrevPage,
+        hasNextPage: result.hasNextPage,
+        page: parseInt(pageInt),
+        add: Handlebars.helpers.add
+    });
+    
   } catch (error) {
       console.error(error);
       res.status(500).send("Error interno del servidor");
@@ -51,6 +56,8 @@ router.get("/listProducts/details/:id", async (req, res) => {
   try {
       const product = await productsDao.getProductById(id);
       res.render("productDetails", {
+        title: "Detalle del producto",
+        fileCss: "detailsProduct.css",
           product,
       });
   } catch (error) {
@@ -62,17 +69,13 @@ router.get("/listProducts/details/:id", async (req, res) => {
   }
 });
 
-
-
 router.get("/realtimeproducts", async (req, res) => {
   try {
     const { limit = 10, page = 1} = req.query;
 
-    // Convierte limit y page a enteros
     const limitInt = parseInt(limit);
     const pageInt = parseInt(page);
 
-    // Llama a productsDao con los parámetros proporcionados
     const result = await productsDao.getAllProduct({
       limit: limitInt,
       page: pageInt,
@@ -91,8 +94,6 @@ router.get("/realtimeproducts", async (req, res) => {
     res.status(500).send("Error interno del servidor");
   }
 });
-
-
 
 router.post("/realtimeproducts", async (req, res) => {
   const { title, description, price, category, thumbnail, stock, code } = req.body;
@@ -128,8 +129,6 @@ router.post("/realtimeproducts", async (req, res) => {
   }
 });
 
-  
-
 router.post("/deleteProduct/:id", (req, res) => {
   const { id } = req.params;
 
@@ -153,15 +152,12 @@ router.get("/chat", (req, res) => {
   });
 });
 
-// Asumiendo que tienes una ruta para ver carritos específicos, algo como "/carts/:cid"
 router.get("/carts/:cartId", async (req, res) => {
   try {
     const { cartId } = req.params;
 
-    // Obtener productos específicos del carrito utilizando el ID del carrito
     const cartProducts = await cartDao.getAllCart(cartId);
 
-    // Renderizar la vista de carrito con los productos específicos
     res.render("cart", {
       title: "Vista del Carrito",
       fileCss: "cartStyle.css",
@@ -172,6 +168,5 @@ router.get("/carts/:cartId", async (req, res) => {
     res.status(500).send("Error interno del servidor");
   }
 });
-
 
 export default router;

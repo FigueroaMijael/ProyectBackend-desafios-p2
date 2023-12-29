@@ -27,6 +27,7 @@ const io = new Server(httpServer)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
 app.engine(
     "hbs",
     handlebars.engine({
@@ -35,6 +36,10 @@ app.engine(
       handlebars: allowInsecurePrototypeAccess(Handlebars),
     })
   );
+
+  Handlebars.registerHelper('eq', function (a, b) {
+    return a === b;
+  });
 
   app.set("view engine", "hbs");
   app.set("views", `${__dirname}/views`);

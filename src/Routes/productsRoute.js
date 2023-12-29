@@ -7,11 +7,9 @@ router.get("/", async (req, res) => {
   try {
     const { limit = 10, page = 1, sort, query, category, availability } = req.query;
 
-    // Convierte limit y page a enteros
     const limitInt = parseInt(limit);
     const pageInt = parseInt(page);
 
-    // Llama a productsDao con los parámetros proporcionados
     const result = await productsDao.getAllProduct({
       limit: limitInt,
       page: pageInt,
@@ -45,20 +43,6 @@ router.get("/", async (req, res) => {
     });
   }
 });
-
-// Función para construir enlaces con parámetros de consulta
-function buildLink(baseUrl, page, limit, sort, query, category, availability) {
-  const queryParams = new URLSearchParams({
-    page,
-    limit,
-    sort,
-    query,
-    category,
-    availability,
-  });
-  return `${baseUrl}?${queryParams.toString()}`;
-}
-
 
 router.get("/:id", async (req, res) => {
 
@@ -131,5 +115,17 @@ router.delete('/delete/:id', async (req, res) => {
   }
 });
 
+// Función para construir enlaces con parámetros de consulta
+function buildLink(baseUrl, page, limit, sort, query, category, availability) {
+  const queryParams = new URLSearchParams({
+    page,
+    limit,
+    sort,
+    query,
+    category,
+    availability,
+  });
+  return `${baseUrl}?${queryParams.toString()}`;
+}
 
 export default router;

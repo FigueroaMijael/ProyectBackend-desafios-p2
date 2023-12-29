@@ -15,12 +15,11 @@ class ProductsDao {
         const queryFilter = {
       ...(query ? { title: query } : {}),
       ...(category ? { category } : {}),
-      // Modificamos la condición para considerar el stock mayor a 0
       stock: { $gt: 0 },
     };
 
     if (availability === "disponible") {
-        // Solo considerar productos con stock mayor a 0 si la disponibilidad es "disponible"
+
         queryFilter.stock = { $gt: 0 };
       }
       

@@ -52,7 +52,6 @@ router.post('/:cartId/products/:productId/:quantity', async (req, res) => {
 
 router.put('/:cartId/products/:productId/:quantity', async (req, res) => {
     const { cartId, productId, quantity } = req.params;
-    /*     const { quantity } = req.body; */
 
     try {
         const updatedCart = await cartDao.updateProductQuantity(cartId, productId, quantity);
