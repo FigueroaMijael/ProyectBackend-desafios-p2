@@ -27,7 +27,6 @@ const io = new Server(httpServer)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
 app.engine(
     "hbs",
     handlebars.engine({
