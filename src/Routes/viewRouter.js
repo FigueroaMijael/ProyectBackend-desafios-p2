@@ -4,8 +4,6 @@ import productsDao from "../daos/dbManager/products.dao.js";
 import cartDao from "../daos/dbManager/cart.dao.js";
 import Handlebars from "handlebars";
 import cookieParser from "cookie-parser";
-import session from "express-session";
-
 
 Handlebars.registerHelper('add', (a, b) => {
   return a + b;
@@ -227,15 +225,6 @@ router.get("/deleteCookie", async (req, res) => {
   }
 })
 
-  // CONFIGUERACION DE SESSION
-  router.use(session(
-    {
-      secret: "codigoSecreto190",
-      resave: true,
-      saveUninitialized: true
-    }
-  ))
-
   router.get('/session', (req,res) => {
     if (req.session.counter) {
       req.session.counter++
@@ -256,7 +245,7 @@ router.get("/deleteCookie", async (req, res) => {
     })
   })
 
-  router.get('/login', (req, res) => {
+  router.get('/loginUse', (req, res) => {
 
     const { username, password } = req.query;
 

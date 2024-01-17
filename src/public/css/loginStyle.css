@@ -1,0 +1,82 @@
+/* login.css */
+
+body {
+    background: linear-gradient(135deg, #000000, #000000); /* Gradiente negro (es un sólido) */
+    color: #ffffff; /* Letras blancas */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+form {
+    max-width: 400px;
+    width: 100%;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.1); /* Fondo semi-transparente */
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); /* Sutil sombra */
+}
+
+h2 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #8a2be2; /* Violeta brillante */
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    font-size: 16px;
+    color: #ffffff; /* Letras blancas */
+}
+
+input {
+    width: calc(100% - 16px);
+    padding: 12px;
+    margin-top: 8px;
+    box-sizing: border-box;
+    border: 2px solid #8a2be2; /* Borde violeta brillante */
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.2); /* Fondo semi-transparente */
+    color: #ffffff; /* Letras blancas */
+    font-size: 14px;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+input:focus {
+    border-color: #8000ff; /* Borde violeta más oscuro al enfocar */
+    background-color: rgba(255, 255, 255, 0.3); /* Fondo semi-transparente más claro al enfocar */
+}
+
+button {
+    background-color: #001f3f; /* Azul oscuro */
+    color: #ffffff; /* Letras blancas */
+    padding: 12px;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #001429; /* Azul oscuro más claro al pasar el ratón */
+}
+
+a {
+    color: #8a2be2; /* Violeta brillante */
+    text-decoration: none;
+    margin-top: 20px;
+    display: inline-block;
+    font-size: 14px;
+}
+
+a:hover {
+    color: #7a0086; /* Violeta brillante más oscuro al pasar el ratón */
+}
+

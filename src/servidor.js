@@ -1,32 +1,47 @@
 import express from 'express';
 import handlebars from 'express-handlebars';
-import __dirname from './dirname.js'
-import { Server } from 'socket.io'
-import mongoose from 'mongoose';
+import session from 'express-session';
 import Handlebars from "handlebars";
 import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access";
+import __dirname from './dirname.js'
+
+import mongoose from 'mongoose';
+import MongoStore from 'connect-mongo';
+
 import productsRoute from './Routes/productsRoute.js';
 import cartRoute from './Routes/cartRoute.js';
 import viewRouter from './Routes/viewRouter.js'
+import sessionRoute from './Routes/sessionsRoute.js'
+import usersViewRoute from './Routes/usersViewRoute.js'
+
+import { Server } from 'socket.io'
 import MessagesDao from './daos/dbManager/messages.dao.js'
+
+
 
 const app = express();
 const PORT = 8080;
 const httpServer = app.listen(PORT, () => console.log(`Server is running at http://localhost:${PORT}`));
 
-mongoose.connect('mongodb://127.0.0.1:27017/ecommers')
-.then(() => {
-  console.log("Connected DB");
-})
-.catch((error) => {
-  console.log(error);
-});
+const MONGO_URL = 'mongodb://127.0.0.1:27017/ecommers'
 
-const io = new Server(httpServer)
+const connectMongoDB = async () => {
+  try {
+    await mongoose.connect(MONGO_URL)
+    console.log("conectado con exito a la base de datos");
+  } catch (error) {
+    console.error("NO se pudo conectar a la DB" + error);
+    process.exit();
+  }
+}
 
+connectMongoDB()
+
+//Configuracion express
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//Configuracion hbs
 app.engine(
     "hbs",
     handlebars.engine({
@@ -36,19 +51,37 @@ app.engine(
     })
   );
 
-  Handlebars.registerHelper('eq', function (a, b) {
+  app.set("view engine", "hbs");
+  app.set("views", `${__dirname}/views`);
+  app.use(express.static(__dirname + '/public'))
+
+Handlebars.registerHelper('eq', function (a, b) {
     return a === b;
   });
 
-  app.set("view engine", "hbs");
-  app.set("views", `${__dirname}/views`);
-  
-  app.use(express.static(`${__dirname}/public`));
+ // CONFIGUERACION DE SESSION
+    app.use(session(
+      {
+        store: MongoStore.create({
+          mongoUrl: MONGO_URL,
+          mongoOptions: {useNewUrlParser: true, useUnifiedTopology: true},
+          ttl: 10 * 60,
+        }),
+        
+        secret: "codigoSecreto190",
+        resave: true,
+        saveUninitialized: true
+      }
+    ))
 
+  // RUTAS
   app.use('/api/products', productsRoute);
   app.use('/api/cart', cartRoute);
-  app.use("/api", viewRouter);
-  
+  app.use("/", viewRouter);
+  app.use("/api/session", sessionRoute);
+  app.use("/users", usersViewRoute)
+
+  const io = new Server(httpServer)
 
   io.on("connection", (socket) => {
     console.log("Nuevo usuario conectado");
@@ -68,6 +101,6 @@ app.engine(
     });
 
   });
-
+  
   export {io}
   
