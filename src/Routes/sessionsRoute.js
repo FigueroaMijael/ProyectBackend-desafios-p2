@@ -8,6 +8,9 @@ router.post("/register", async (req, res) => {
 
     const { first_name, last_name, email, age, password } = req.body;
 
+    console.log("Registrando usuario:");
+    console.log(req.body);
+    
     const exist = await usersModel.findOne({ email });
 
     if(exist) {

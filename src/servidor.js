@@ -5,7 +5,6 @@ import Handlebars from "handlebars";
 import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access";
 import __dirname from './dirname.js'
 
-import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 
 import productsRoute from './Routes/productsRoute.js';
@@ -16,26 +15,20 @@ import usersViewRoute from './Routes/usersViewRoute.js'
 
 import { Server } from 'socket.io'
 import MessagesDao from './daos/dbManager/messages.dao.js'
-
-
+;
 
 const app = express();
 const PORT = 8080;
 const httpServer = app.listen(PORT, () => console.log(`Server is running at http://localhost:${PORT}`));
 
-const MONGO_URL = 'mongodb://127.0.0.1:27017/ecommers'
+// CONNECTION TO DB
 
-const connectMongoDB = async () => {
-  try {
-    await mongoose.connect(MONGO_URL)
-    console.log("conectado con exito a la base de datos");
-  } catch (error) {
-    console.error("NO se pudo conectar a la DB" + error);
-    process.exit();
-  }
-}
+// CONFIGURACION DOTENV
+require('dotenv').config();
 
-connectMongoDB()
+const { connectToMongoDB } = require('./db.js');
+
+connectToMongoDB()
 
 //Configuracion express
 app.use(express.json());
