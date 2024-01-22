@@ -18,7 +18,7 @@ router.get("/", (req, res) => {
   })
 })
 
-router.get("/listProducts", async (req, res) => {
+router.get("/products", async (req, res) => {
   try {
       const { limit = 10, page = 1, sort, query, category, availability } = req.query;
 

@@ -29,3 +29,21 @@ const setActive = (button) => {
   console.log('Botón activado:', button);
 };
 
+
+document.getElementById('searchBtn').addEventListener('click', function() {
+  var searchTerm = document.getElementById('searchInput').value;
+  alert('Buscando: ' + searchTerm);
+});
+
+// Simulación de agregar productos al carrito
+var cartCount = 0;
+
+document.getElementById('cartIcon').addEventListener('click', () => {
+  cartCount++;
+  updateCartCount(cartCount);
+
+});
+
+function updateCartCount(count) {
+  document.getElementById('cartCount').textContent = count;
+}

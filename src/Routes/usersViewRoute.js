@@ -25,4 +25,13 @@ route.get("/profile", (req, res) => {
             })    
 })
 
+route.get("/updatePassword", (req, res) => {
+    res.render("updatePassword", {
+        title: "update Password",
+        fileCss: "updatePassword.css",
+
+            })    
+})
+
+
 export default route

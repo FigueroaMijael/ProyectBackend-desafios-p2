@@ -9,6 +9,40 @@
 </head>
 
 <body>
+
+    <div class="navbar">
+    <a href="#home" class="nav-item">Inicio</a>
+    <a href="#news" class="nav-item">agregar producto</a>
+    <div class="dropdown">
+        <button class="dropbtn">Productos
+            <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content">
+            <a href="#category1" class="dropdown-item">Categoría 1</a>
+            <a href="#category2" class="dropdown-item">Categoría 2</a>
+            <a href="#category3" class="dropdown-item">Categoría 3</a>
+        </div>
+    </div>
+    <div class="user-section">
+        <a href="#login" class="nav-item" id="loginBtn">Iniciar Sesión</a>
+        <a href="#register" class="nav-item" id="registerBtn">Registrarse</a>
+        <div class="icon" id="userIcon">
+            <i class="fa fa-user"></i>
+        </div>
+    </div>
+    <div class="search-bar">
+        <input type="text" placeholder="Buscar..." id="searchInput">
+        <button type="submit" id="searchBtn"><i class="fa fa-search"></i></button>
+    </div>
+    <div class="icon" id="cartIcon">
+        <i class="fa fa-shopping-cart"></i>
+        <span class="badge" id="cartCount">0</span>
+    </div>
+    <div class="icon" id="languageIcon">
+        <i class="fa fa-language"></i>
+    </div>
+</div>
+
     <div class="container">
         <h1>Listado de Productos</h1>
 

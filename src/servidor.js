@@ -15,7 +15,13 @@ import usersViewRoute from './Routes/usersViewRoute.js'
 
 import { Server } from 'socket.io'
 import MessagesDao from './daos/dbManager/messages.dao.js'
-;
+
+import dotenv from 'dotenv'
+import connectToMongoDB from './db.js';
+
+import passport from 'passport';
+import initializePassport from './config/passportConfig.js';
+
 
 const app = express();
 const PORT = 8080;
@@ -24,9 +30,7 @@ const httpServer = app.listen(PORT, () => console.log(`Server is running at http
 // CONNECTION TO DB
 
 // CONFIGURACION DOTENV
-require('dotenv').config();
-
-const { connectToMongoDB } = require('./db.js');
+dotenv.config()
 
 connectToMongoDB()
 
@@ -56,7 +60,7 @@ Handlebars.registerHelper('eq', function (a, b) {
     app.use(session(
       {
         store: MongoStore.create({
-          mongoUrl: MONGO_URL,
+          mongoUrl: process.env.MONGODBURI,
           mongoOptions: {useNewUrlParser: true, useUnifiedTopology: true},
           ttl: 10 * 60,
         }),
@@ -66,6 +70,11 @@ Handlebars.registerHelper('eq', function (a, b) {
         saveUninitialized: true
       }
     ))
+
+    // Middleware passport
+    initializePassport();
+    app.use(passport.initialize());
+    app.use(passport.session());
 
   // RUTAS
   app.use('/api/products', productsRoute);
