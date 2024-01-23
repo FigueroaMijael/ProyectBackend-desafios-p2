@@ -15,12 +15,12 @@ form.addEventListener('submit', async (e) => {
             method: 'POST',
             body: JSON.stringify(obj),
             headers: {
-                'Content-Type': 'application/json' // Corregido 'Content.Type' a 'Content-Type'
+                'Content-Type': 'application/json' 
             }
         });
 
         if (response.status === 200) {
-            const result = await response.json(); // Parsear la respuesta JSON
+            const result = await response.json(); 
             console.log(result);
             window.location.replace('/users/login');
         } else {

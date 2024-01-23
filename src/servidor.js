@@ -12,6 +12,7 @@ import cartRoute from './Routes/cartRoute.js';
 import viewRouter from './Routes/viewRouter.js'
 import sessionRoute from './Routes/sessionsRoute.js'
 import usersViewRoute from './Routes/usersViewRoute.js'
+import githubLoginViewRouter from './Routes/githubLoginViewRouter.js'
 
 import { Server } from 'socket.io'
 import MessagesDao from './daos/dbManager/messages.dao.js'
@@ -26,8 +27,6 @@ import initializePassport from './config/passportConfig.js';
 const app = express();
 const PORT = 8080;
 const httpServer = app.listen(PORT, () => console.log(`Server is running at http://localhost:${PORT}`));
-
-// CONNECTION TO DB
 
 // CONFIGURACION DOTENV
 dotenv.config()
@@ -80,9 +79,9 @@ Handlebars.registerHelper('eq', function (a, b) {
   app.use('/api/products', productsRoute);
   app.use('/api/cart', cartRoute);
   app.use("/", viewRouter);
-  app.use("/api/session", sessionRoute);
+  app.use("/sessions", sessionRoute);
   app.use("/users", usersViewRoute)
-
+  app.use("/github", githubLoginViewRouter)
   const io = new Server(httpServer)
 
   io.on("connection", (socket) => {

@@ -23,10 +23,8 @@ form.addEventListener('submit', async (e) => {
         } else {
             const error = await response.json();
             console.error(error);
-            // Puedes manejar el error, por ejemplo, mostrar un mensaje al usuario
         }
     } catch (error) {
         console.error('Error al realizar la solicitud:', error);
-        // Puedes manejar el error, por ejemplo, mostrar un mensaje al usuario
     }
 });

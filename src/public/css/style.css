@@ -191,8 +191,8 @@ button.updateProduct {
   }
   
   .sort-button.active {
-    background-color: #27ae60; /* Color de fondo cuando el botón está activo */
-    color: white; /* Color del texto cuando el botón está activo */
+    background-color: #27ae60; 
+    color: white; 
   }
   
   .sort-button:hover {
@@ -200,12 +200,7 @@ button.updateProduct {
     color: white;
   }
 
-  body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
-}
+ /* NAVBAR */
 
 .navbar {
     background-color: #3498db;

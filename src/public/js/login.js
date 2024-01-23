@@ -15,7 +15,7 @@ form.addEventListener('submit', async (e) => {
             method: 'POST',
             body: JSON.stringify(obj),
             headers: {
-                'Content-Type': 'application/json' // Corregido 'Content.Type' a 'Content-Type'
+                'Content-Type': 'application/json' 
             }
         });
 
