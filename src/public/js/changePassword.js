@@ -8,7 +8,7 @@ form.addEventListener('submit', async (e) => {
     const newPassword = formData.get('newPassword');
 
     try {
-        const response = await fetch('/api/session/Updatepassword', {
+        const response = await fetch('/api/sessions/Updatepassword', {
             method: 'PUT',
             body: JSON.stringify({ email, newPassword }),
             headers: {

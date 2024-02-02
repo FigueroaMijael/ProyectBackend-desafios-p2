@@ -10,9 +10,9 @@ import MongoStore from 'connect-mongo';
 import productsRoute from './Routes/productsRoute.js';
 import cartRoute from './Routes/cartRoute.js';
 import viewRouter from './Routes/viewRouter.js'
-import sessionRoute from './Routes/sessionsRoute.js'
 import usersViewRoute from './Routes/usersViewRoute.js'
 import githubLoginViewRouter from './Routes/githubLoginViewRouter.js'
+import jwtRoute from './Routes/jwtRoute.js'
 
 import { Server } from 'socket.io'
 import MessagesDao from './daos/dbManager/messages.dao.js'
@@ -76,12 +76,13 @@ Handlebars.registerHelper('eq', function (a, b) {
     app.use(passport.session());
 
   // RUTAS
+  app.use("/", viewRouter);
+  app.use("/users", usersViewRoute)
+  app.use("/api/github", githubLoginViewRouter)
   app.use('/api/products', productsRoute);
   app.use('/api/cart', cartRoute);
-  app.use("/", viewRouter);
-  app.use("/sessions", sessionRoute);
-  app.use("/users", usersViewRoute)
-  app.use("/github", githubLoginViewRouter)
+  app.use("/api/jwt", jwtRoute)
+  
   const io = new Server(httpServer)
 
   io.on("connection", (socket) => {

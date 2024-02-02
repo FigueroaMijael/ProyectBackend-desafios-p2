@@ -1,31 +1,34 @@
 import { Router } from "express";
-import { usersModel } from "../Models/login.model.js" 
+import { passportCall} from "../dirname.js";
+import usersService from "../daos/dbManager/login.dao.js";
 
-const route = Router()
+const userService = new usersService()
 
-route.get("/login", (req, res) => {
+const router = Router()
+
+router.get("/login", (req, res) => {
     res.render("login", {
         title: "vista del login",
         fileCss: "loginStyle.css"
     })
 });
 
-route.get("/register", (req, res) => {
+router.get("/register", (req, res) => {
     res.render("register", {
         title: "vista del resgister",
         fileCss: "registerStyle.css"
     })    
 })
 
-route.get("/profile", (req, res) => {
-    res.render("profile", {
-        title: "profile",
-        fileCss: "profileStyle.css",
-        user: req.session.user
-            })    
-})
+router.get("/profile", passportCall('jwt'), async(req,res)=>{
+    const user = req.user;
+    console.log("Estudiante logueado: " + user);
+    let users = await userService.getAll();
+    console.log(users);
+    res.render('profile',{ users : users })   
+});
 
-route.get("/updatePassword", (req, res) => {
+router.get("/updatePassword", (req, res) => {
     res.render("updatePassword", {
         title: "update Password",
         fileCss: "updatePassword.css",
@@ -34,4 +37,9 @@ route.get("/updatePassword", (req, res) => {
 })
 
 
-export default route
+router.get("/error", (req, res) => {
+    res.render("error");
+});
+
+
+export default router

@@ -2,80 +2,96 @@ import passport from "passport";
 import local from 'passport-local'
 import { usersModel } from "../Models/login.model.js";
 import { createHash, isValidPassword} from '../dirname.js'
+import GithubStrategy from 'passport-github2'
+import jwtStrategy from 'passport-jwt'
+import dotenv from 'dotenv'
 
-const LocalStrategy = local.Strategy;
+dotenv.config()
 
-const initializePassport =  () => {
-    passport.use('register', new LocalStrategy(
-        {passReqToCallback: true, usernameField: `email`}, async (req, username, password, done) => {
+const localStrategy  = local.Strategy;
 
-            const { first_name, last_name, email, age } = req.body;
+const JwtStrategy = jwtStrategy.Strategy;
+const ExtractJWT = jwtStrategy.ExtractJwt;
 
+const initializePassport = () => {
+
+    passport.use('jwt', new JwtStrategy(
+        {
+            jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+            secretOrKey: process.env.JWT_PRIVATE_KEY
+        }, async (jwt_payload, done) => {
+            console.log("Entrando a passport Strategy con JWT.");
             try {
-                const exist = await usersModel.findOne({ email });
-                
-                if(exist) {
-                    console.log("El usuario ya existe");
-                    done(null, false)
-                    }
-
-                    const user = {
-                        first_name, 
-                        last_name, 
-                        email, 
-                        age, 
-                        password: createHash(password)
-                    };
-                    
-                    const result = await usersModel.create(user);
-
-                    return done(null, result);
-
+                console.log("JWT obtenido del Payload");
+                console.log(jwt_payload);
+                return done(null, jwt_payload.user)
             } catch (error) {
-                return done("Error registrando al usuario" + error)
+                return done(error)
             }
         }
-    ))
-}
+    ));
 
-passport.use('login', new LocalStrategy(
-    {passReqToCallback: true, usernameField: `email`}, async (req, username, password, done) => {
+    //Funciones de Serializacion y Desserializacion
+    passport.serializeUser((user, done) => {
+        done(null, user._id);
+    });
 
-        const { email } = req.body;
 
+    passport.deserializeUser(async (id, done) => {
         try {
-            const user = await usersModel.findOne({ email });
-            console.log(`Usuario de ${user} encontrado`);
-
-            if (!user) {
-                console.warn("No existe un usuario con el email" + user);
-                return done(null, false);
-            }
-        
-            if (!isValidPassword(password, user)) { 
-                    console.warn("El usuario o la contraseña no son correctas");
-                    return done(null, false);
-            }
-
-            return done(null, user);
-
-         }catch (error) {
-            return done("El mail o contraseña es incorrecta" + error)
+            let user = await usersModel.findById(id);
+            done(null, user);
+        } catch (error) {
+            console.error("Error deserializando el usuario: " + error);
         }
-    }
-));
+    });
+};
 
-passport.serializeUser((user, done) => {
-    done(null, user._id)
-});
+passport.use('github', new GithubStrategy({
+    clientID: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    callbackUrl: process.env.GITHUB_URLCALLBACK
+    },
+    async (accessToken, refreshToken, profile, done) => {
+        console.log("Profile obtenido del usuario de github: ");
+        console.log(profile);
+        try {
+            const user = await usersModel.findOne({emali: profile._json.email})
+            console.log("Usuario encontrado para login:");
+            console.log(user);
+            if(!user) {
+                console.warn("User doesn't exists with username: " + profile._json.email);
+                let NewUser = {
+                    first_name: profile._json.name,
+                    last_name: ' ', 
+                    email: profile._json.email, 
+                    age: 28,
+                    password: '',
+                    loggedBy: 'GitHub'   
+                }
+                const result = await usersModel.create(NewUser);
+                return done(null, result);
+            } else {
+                console.log('user exists')
+                return done(null, user)
+            }
+            
+        } catch (error) {
+            return done(error)
+        }
+    }))
 
-passport.deserializeUser( async (id, done) => {
-    try {
-        let user = await usersModel.findById(id);
-        done(null, user)
-    } catch (error) {
-        console.error("Error deserializando el usuario" + error);
+const cookieExtractor = req => {
+    let token = null;
+    console.log("Entrando a Cookie Extractor");
+    if (req && req.cookies) {//Validamos que exista el request y las cookies.
+        console.log("Cookies presentes: ");
+        console.log(req.cookies);
+        token = req.cookies['jwtCookieToken']
+        console.log("Token obtenido desde Cookie:");
+        console.log(token);
     }
-});
+    return token;
+};
 
 export default initializePassport;

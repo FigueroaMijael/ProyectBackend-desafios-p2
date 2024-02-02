@@ -1,15 +1,33 @@
 import { Schema, model } from "mongoose";
 
+const stringTypeSchemaUniqueRequired = {
+    type: String,
+    unique: true,
+    required: true
+};
+
+const stringTypeSchemaNonUniqueRequired = {
+    type: String,
+    required: true
+};
+
 const usersSchema = new Schema({
-    first_name: {type: String},
-    last_name: {type: String},
-    email: {
-        type: String, 
-        unique: true
+    first_name: stringTypeSchemaNonUniqueRequired,
+    last_name: stringTypeSchemaNonUniqueRequired,
+    email: stringTypeSchemaUniqueRequired,
+    age: stringTypeSchemaNonUniqueRequired,
+    password: stringTypeSchemaNonUniqueRequired,
+    loggedBy: {
+        type: String,
+        default: 'form', // Valor por defecto
+        enum: ['form', 'github'], // Valores permitidos
     },
-    age: {type: Number},
-    password: {type: String}
-})
+    role: {
+        type: String,
+        default: 'user',
+        enum: ['user', 'admin', 'premium'],
+    }
+});
 
 const usersModel = model("users", usersSchema);
 
