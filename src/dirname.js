@@ -5,10 +5,10 @@ import jwt from "jsonwebtoken";
 import dotenv from 'dotenv'
 import passport from "passport";
 
-dotenv.config()
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+dotenv.config()
 
 export const createHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
@@ -20,31 +20,9 @@ export const isValidPassword = (user, password) => {
 
 //generate token JWT
 export const generateJWToken = (user) => {
-    return jwt.sign({user}, process.env.JWT_PRIVATE_KEY, {expiresIn: '24h'});
+    return jwt.sign({user}, process.env.JWT_PRIVATE_KEY, {expiresIn: '120s'});
 };
 
-//authToken
-export const authToken = (req,res,next) => {
-    const authHeader = req.headers.authorization;
-    console.log("Token present in header auth:");
-    console.log(authHeader);
-
-    if(!authHeader){
-        return res.status(401).send({error: "User not authenticated or missing token"});
-    }
-
-    const token = authHeader.split(' ')[1];
-
-    // validar token
-    jwt.verify(token, process.env.JWT_PRIVATE_KEY, (error, credentials) => {
-        if(error) return res.status(403).send({error: "Token invalid, unauthorized!"})
-
-        //token OK!
-        req.user = credentials.user;
-        console.log(req.user);
-        next();
-    })
-}
 
 // para manejo de errores
 export const passportCall = (strategy) => {
@@ -76,5 +54,28 @@ export const authorization = (role) => {
         next()
     }
 };
+
+//authToken
+export const authToken = (req,res,next) => {
+    const authHeader = req.headers.authorization;
+    console.log("Token present in header auth:");
+    console.log(authHeader);
+
+    if(!authHeader){
+        return res.status(401).send({error: "User not authenticated or missing token"});
+    }
+
+    const token = authHeader.split('')[1];
+
+    // validar token
+    jwt.verify(token, process.env.JWT_PRIVATE_KEY, (error, credential) => {
+        if(error) return res.status(403).send({error: "Token invalid, unauthorized!"})
+
+        //token OK!
+        req.user = credential.user;
+        console.log(req.user);
+        next();
+    })
+}
 
 export default __dirname;

@@ -21,11 +21,20 @@ router.get("/register", (req, res) => {
 })
 
 router.get("/profile", passportCall('jwt'), async(req,res)=>{
-    const user = req.user;
+/*     const user = req.user;
     console.log("Estudiante logueado: " + user);
     let users = await userService.getAll();
     console.log(users);
-    res.render('profile',{ users : users })   
+    res.render('profile',{ users : users })    */
+
+     //authToken, //-> Usando Authorization Bearer Token
+    //passport.authenticate('jwt', {session: false}), //-> Usando JWT por Cookie
+    //passportCall('jwt'), //-> Usando JWT por Cookie usando customCall
+    //authorization('user'),
+
+        res.render("profile", {
+            user: req.user
+        });
 });
 
 router.get("/updatePassword", (req, res) => {

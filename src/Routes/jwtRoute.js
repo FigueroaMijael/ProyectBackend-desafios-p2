@@ -1,17 +1,14 @@
 import { Router } from 'express';
-import { isValidPassword, generateJWToken, createHash, authToken } from '../dirname.js';
-import usersService from "../daos/dbManager/login.dao.js";
+import { isValidPassword, generateJWToken, createHash } from '../dirname.js';
 import { usersModel } from "../Models/login.model.js";
 import passport  from "passport";
-
-const userService = new usersService()
 
 const router = Router();
 
 router.post("/login", async (req, res)=>{
     const {email, password} = req.body;
     try {
-        const user = await userService.findByUsername(email);
+        const user = await usersModel.findOne({email: email});
         console.log("Usuario encontrado para login:");
         console.log(user);
         if (!user) {
@@ -23,7 +20,7 @@ router.post("/login", async (req, res)=>{
             return res.status(401).send({status:"error",error:"El usuario y la contraseña no coinciden!"});
         }
         const tokenUser= {
-            name : `${user.name} ${user.lastName}`,
+            name : `${user.first_name} ${user.last_name}`,
             email: user.email,
             age: user.age,
             role: user.role
@@ -36,7 +33,7 @@ router.post("/login", async (req, res)=>{
             httpOnly: true
         });
         res.send({message: "Login successful!"});
-        //const access_token = generateJWToken(tokenUser); //-->Con access_token
+
     } catch (error) {
         console.error(error);
         return res.status(500).send({status:"error",error:"Error interno de la applicacion."});
@@ -44,7 +41,7 @@ router.post("/login", async (req, res)=>{
 });
 
 
-router.post("/register",  async (req, res)=>{
+/* router.post("/register",  async (req, res)=>{
     const {first_name ,last_name , email, age, password} = req.body;
     console.log("Registrando usuario:");
     console.log(req.body);
@@ -64,7 +61,7 @@ router.post("/register",  async (req, res)=>{
 
     const result = await userService.save(user);
     res.status(201).send({status: "success", message: "Usuario creado con extito con ID: " + result.id});
-});
+}); */
 
 router.put("/Updatepassword", async (req, res) => {
     try {
@@ -124,19 +121,5 @@ async (req, res) => {
 
     res.redirect("/users/profile");
 })
-
-router.get("/:userId", authToken,
-async (req, res) =>{
-    const userId = req.params.userId;
-    try {
-        const user = await userModel.findById(userId);
-        if (!user) {
-            res.status(202).json({message: "User not found with ID: " + userId});
-        }
-        res.json(user);
-    } catch (error) {
-        console.error("Error consultando el usuario con ID: " + userId);
-    }
-});
 
 export default router

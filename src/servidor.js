@@ -13,6 +13,7 @@ import viewRouter from './Routes/viewRouter.js'
 import usersViewRoute from './Routes/usersViewRoute.js'
 import githubLoginViewRouter from './Routes/githubLoginViewRouter.js'
 import jwtRoute from './Routes/jwtRoute.js'
+import usersRouter from './Routes/usersRouter.js'
 
 import { Server } from 'socket.io'
 import MessagesDao from './daos/dbManager/messages.dao.js'
@@ -22,6 +23,7 @@ import connectToMongoDB from './db.js';
 
 import passport from 'passport';
 import initializePassport from './config/passportConfig.js';
+
 
 
 const app = express();
@@ -56,19 +58,18 @@ Handlebars.registerHelper('eq', function (a, b) {
   });
 
  // CONFIGUERACION DE SESSION
-    app.use(session(
-      {
-        store: MongoStore.create({
-          mongoUrl: process.env.MONGODBURI,
-          mongoOptions: {useNewUrlParser: true, useUnifiedTopology: true},
-          ttl: 10 * 60,
-        }),
-        
-        secret: "codigoSecreto190",
-        resave: true,
-        saveUninitialized: true
-      }
-    ))
+ app.use(session(
+  {
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODBURI,
+      ttl: 10 * 60, // Tiempo de vida de la sesión en segundos
+    }),
+    secret: "codigoSecreto190",
+    resave: true,
+    saveUninitialized: true
+  }
+))
+
 
     // Middleware passport
     initializePassport();
@@ -82,7 +83,7 @@ Handlebars.registerHelper('eq', function (a, b) {
   app.use('/api/products', productsRoute);
   app.use('/api/cart', cartRoute);
   app.use("/api/jwt", jwtRoute)
-  
+  app.use('/api/users', usersRouter);
   const io = new Server(httpServer)
 
   io.on("connection", (socket) => {

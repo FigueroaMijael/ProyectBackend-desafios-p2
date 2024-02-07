@@ -10,7 +10,7 @@ Handlebars.registerHelper('add', (a, b) => {
 
 const router = Router();
 
-router.get("/products", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
       const { limit = 10, page = 1, sort, query, category, availability } = req.query;
 
@@ -43,7 +43,7 @@ router.get("/products", async (req, res) => {
   }
 });
 
-router.get("/listProducts/details/:id", async (req, res) => {
+/* router.get("/listProducts/details/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -109,7 +109,7 @@ router.get("/carts/:cartId", async (req, res) => {
     console.error(error);
     res.status(500).send("Error interno del servidor");
   }
-});
+}); */
 
 
 export default router;

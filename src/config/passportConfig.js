@@ -1,14 +1,11 @@
 import passport from "passport";
-import local from 'passport-local'
 import { usersModel } from "../Models/login.model.js";
-import { createHash, isValidPassword} from '../dirname.js'
 import GithubStrategy from 'passport-github2'
 import jwtStrategy from 'passport-jwt'
 import dotenv from 'dotenv'
 
 dotenv.config()
 
-const localStrategy  = local.Strategy;
 
 const JwtStrategy = jwtStrategy.Strategy;
 const ExtractJWT = jwtStrategy.ExtractJwt;
@@ -84,7 +81,7 @@ passport.use('github', new GithubStrategy({
 const cookieExtractor = req => {
     let token = null;
     console.log("Entrando a Cookie Extractor");
-    if (req && req.cookies) {//Validamos que exista el request y las cookies.
+    if (req && req.cookies) {
         console.log("Cookies presentes: ");
         console.log(req.cookies);
         token = req.cookies['jwtCookieToken']
